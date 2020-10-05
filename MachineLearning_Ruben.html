@@ -370,73 +370,66 @@ summary {
 </div>
 
 
-<div id="i.-overview" class="section level2">
-<h2>I. Overview</h2>
-<p>This document is the final report of the Peer Assessment project from Coursera’s course Practical Machine Learning, as part of the Specialization in Data Science. It was built up in RStudio, using its knitr functions, meant to be published in html format. This analysis meant to be the basis for the course quiz and a prediction assignment writeup. The main goal of the project is to predict the manner in which 6 participants performed some exercise as described below. This is the “classe” variable in the training set. The machine learning algorithm described here is applied to the 20 test cases available in the test data and the predictions are submitted in appropriate format to the Course Project Prediction Quiz for automated grading.</p>
+<div id="coursera-practical-machine-learning-final-project" class="section level2">
+<h2>Coursera Practical Machine Learning Final Project</h2>
+<p>Ruben Pessoa</p>
+<p>This document is the final project for the Coursera “Practical Machine Learning” course. It was produced using RStudio’s Markdown and Knitr. Overview</p>
+<p>Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it.</p>
+<p>In this project, we will use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways.</p>
+<p>The data consists of a Training data and a Test data (to be used to validate the selected model).</p>
+<p>The goal of your project is to predict the manner in which they did the exercise. This is the “classe” variable in the training set. You may use any of the other variables to predict with.</p>
+<p>Note: The dataset used in this project is a courtesy of “Ugulino, W.; Cardador, D.; Vega, K.; Velloso, E.; Milidiu, R.; Fuks, H. Wearable Computing: Accelerometers’ Data Classification of Body Postures and Movements”</p>
 </div>
-<div id="ii.-background" class="section level2">
-<h2>II. Background</h2>
-<p>Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: <a href="http://groupware.les.inf.puc-rio.br/har" class="uri">http://groupware.les.inf.puc-rio.br/har</a> (see the section on the Weight Lifting Exercise Dataset).</p>
-</div>
-<div id="iii.-data-loading-and-exploratory-analysis" class="section level2">
-<h2>III. Data Loading and Exploratory Analysis</h2>
-</div>
-<div id="a-dataset-overview" class="section level2">
-<h2>a) Dataset Overview</h2>
-<p>The training data for this project are available here:</p>
-<p><a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv" class="uri">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv</a></p>
-<p>The test data are available here:</p>
-<p><a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv" class="uri">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv</a></p>
-<p>The data for this project come from <a href="http://groupware.les.inf.puc-rio.br/har" class="uri">http://groupware.les.inf.puc-rio.br/har</a>. Full source:</p>
-<p>Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. “Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human ’13)”. Stuttgart, Germany: ACM SIGCHI, 2013.</p>
-<p>My special thanks to the above mentioned authors for being so generous in allowing their data to be used for this kind of assignment.</p>
-<p>A short description of the datasets content from the authors’ website:</p>
-<p>“Six young health participants were asked to perform one set of 10 repetitions of the Unilateral Dumbbell Biceps Curl in five different fashions: exactly according to the specification (Class A), throwing the elbows to the front (Class B), lifting the dumbbell only halfway (Class C), lowering the dumbbell only halfway (Class D) and throwing the hips to the front (Class E).</p>
-<p>Class A corresponds to the specified execution of the exercise, while the other 4 classes correspond to common mistakes. Participants were supervised by an experienced weight lifter to make sure the execution complied to the manner they were supposed to simulate. The exercises were performed by six male participants aged between 20-28 years, with little weight lifting experience. We made sure that all participants could easily simulate the mistakes in a safe and controlled manner by using a relatively light dumbbell (1.25kg).&quot;</p>
-</div>
-<div id="b-environment-preparation" class="section level2">
-<h2>b) Environment Preparation</h2>
-<p>We first upload the R libraries that are necessary for the complete analysis.</p>
-<pre class="code"><code>rm(list=ls())                # free up memory for the download of the data sets
-setwd(&quot;~/Cursos/Data Science/08 Practical Machine Learning/Projeto&quot;)
-library(knitr)
-library(caret)
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<div id="load-packages" class="section level3">
+<h3>Load packages</h3>
+<pre class="r"><code>library(caret)
+
+## Loading required package: lattice
+
+## Loading required package: ggplot2
+
 library(rpart)
 library(rpart.plot)
+library(RColorBrewer)
 library(rattle)
+
 library(randomForest)
+
 library(corrplot)
-set.seed(12345)</code></pre>
+
+library(gbm)</code></pre>
 </div>
-<div id="c-data-loading-and-cleaning" class="section level2">
-<h2>c) Data Loading and Cleaning</h2>
-<p>The next step is loading the dataset from the URL provided above. The training dataset is then partinioned in 2 to create a Training set (70% of the data) for the modeling process and a Test set (with the remaining 30%) for the validations. The testing dataset is not changed and will only be used for the quiz results generation.</p>
+<div id="load-data" class="section level3">
+<h3>Load data</h3>
+<p><strong>First:</strong></p>
+<ol style="list-style-type: lower-roman">
+<li>Make sure your data and R Markdown files are in the same directory;</li>
+</ol>
+<p><strong>First:</strong></p>
 </div>
-<div id="d-correlation-analysis" class="section level2">
-<h2>d) Correlation Analysis</h2>
-<p>A correlation among variables is analysed before proceeding to the modeling procedures.</p>
-<p>The highly correlated variables are shown in dark colors in the graph above. To make an evem more compact analysis, a PCA (Principal Components Analysis) could be performed as pre-processing step to the datasets. Nevertheless, as the correlations are quite few, this step will not be applied for this assignment.</p>
 </div>
-<div id="iv.-prediction-model-building" class="section level2">
-<h2>IV. Prediction Model Building</h2>
-<p>Three methods will be applied to model the regressions (in the Train dataset) and the best one (with higher accuracy when applied to the Test dataset) will be used for the quiz predictions. The methods are: Random Forests, Decision Tree and Generalized Boosted Model, as described below. A Confusion Matrix is plotted at the end of each analysis to better visualize the accuracy of the models.</p>
+<div id="cleaning-the-input-data" class="section level2">
+<h2>Cleaning the input data</h2>
+<p>We remove the variables that contains missing values. Note along the cleaning process we display the dimension of the reduced dataset</p>
+<p>We now remove the first seven variables as they have little impact on the outcome classe</p>
+<p>After this cleaning we are down now to 53 variables</p>
 </div>
-<div id="a-method-random-forest" class="section level2">
-<h2>a) Method: Random Forest</h2>
-</div>
-<div id="b-method-decision-trees" class="section level2">
-<h2>b) Method: Decision Trees</h2>
-</div>
-<div id="c-method-generalized-boosted-model" class="section level2">
-<h2>c) Method: Generalized Boosted Model</h2>
-</div>
-<div id="v.-applying-the-selected-model-to-the-test-data" class="section level2">
-<h2>V. Applying the Selected Model to the Test Data</h2>
-<p>The accuracy of the 3 regression modeling methods above are:</p>
-<pre><code>Random Forest : 0.9963
-Decision Tree : 0.7368
-GBM : 0.9839</code></pre>
-<p>In that case, the Random Forest model will be applied to predict the 20 quiz results (testing dataset) as shown below.</p>
+<div id="model-building" class="section level2">
+<h2>Model building</h2>
+<p>For this project we will use classification trees, random forests and Generalized Boosted Model, to predict the outcome.</p>
+<pre><code>1. classification trees
+2. random forests
+3. Generalized Boosted Model</code></pre>
+<p>Prediction with classification trees</p>
+<p>We first obtain the model, and the classification tree as a dendogram. We then validate the model “decisionTreeModel” to find out how well it performs by looking at the accuracy variable. We see that the accuracy rate of the model is low: 0.6967 and therefore the out-of-sample-error is about 0.3 which is considerable.</p>
+<p>Prediction with Random Forest</p>
+<p>We first determine the model. We then validate the model obtained model “modRF1” on the test data to find out how well it performs by looking at the Accuracy variable. The accuracy rate using the random forest is very high: Accuracy : 1 and therefore the out-of-sample-error is equal to 0***. But it might be due to overfitting.</p>
+<p>Prediction with Generalized Boosted Regression Models A gradient boosted model with multinomial loss function. 150 iterations were performed. There were 52 predictors of which 42 had non-zero influence. Tuning parameter ‘shrinkage’ was held constant at a value of 0.1 Tuning parameter ‘n.minobsinnode’ was held constant at a value of 10 Accuracy was used to select the optimal model using the largest value. the final values used for the model were n.trees = 150, interaction.depth = 3, shrinkage = 0.1 and n.minobsinnode = 10.</p>
+<p>The accuracy rate using the random forest is very high: Accuracy : 0.9736 and therefore the *out-of-sample-error is equal to 0.0264**.</p>
+<p>Applying the best model to the validation data</p>
+<p>By comparing the accuracy rate values of the three models, it is clear that the <em>‘Random Forest’ model is the winner.</em></p>
 </div>
 
 
