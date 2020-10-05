@@ -1,0 +1,98 @@
+---
+title: "Project_PMachLearn"
+author: "Ruben Vivaldi Silva Pessoa"
+date: "02/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Coursera Practical Machine Learning Final Project
+Ruben Pessoa
+
+This document is the final project for the Coursera “Practical Machine Learning” course. It was produced using RStudio’s Markdown and Knitr.
+Overview
+
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it.
+
+In this project, we will use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways.
+
+The data consists of a Training data and a Test data (to be used to validate the selected model).
+
+The goal of your project is to predict the manner in which they did the exercise. This is the “classe” variable in the training set. You may use any of the other variables to predict with.
+
+Note: The dataset used in this project is a courtesy of “Ugulino, W.; Cardador, D.; Vega, K.; Velloso, E.; Milidiu, R.; Fuks, H. Wearable Computing: Accelerometers’ Data Classification of Body Postures and Movements”
+
+## Setup
+  
+### Load packages
+
+```{r load-packages, message = FALSE, warning=FALSE}
+library(caret)
+
+## Loading required package: lattice
+
+## Loading required package: ggplot2
+
+library(rpart)
+library(rpart.plot)
+library(RColorBrewer)
+library(rattle)
+
+library(randomForest)
+
+library(corrplot)
+
+library(gbm)
+```
+
+### Load data
+
+**First:** 
+
+(i) Make sure your data and R Markdown files are in the same directory;
+
+**First:** 
+
+## Cleaning the input data
+
+We remove the variables that contains missing values. Note along the cleaning process we display the dimension of the reduced dataset
+
+We now remove the first seven variables as they have little impact on the outcome classe
+
+
+After this cleaning we are down now to 53 variables
+
+## Model building
+
+For this project we will use classification trees, random forests and Generalized Boosted Model, to predict the outcome.
+
+    1. classification trees
+    2. random forests
+    3. Generalized Boosted Model
+
+Prediction with classification trees
+
+We first obtain the model, and the classification tree as a dendogram. We then validate the model “decisionTreeModel” to find out how well it performs by looking at the accuracy variable. We see that the accuracy rate of the model is low: 0.6967 and therefore the out-of-sample-error is about 0.3 which is considerable.
+
+Prediction with Random Forest
+
+We first determine the model. We then validate the model obtained model “modRF1” on the test data to find out how well it performs by looking at the Accuracy variable. The accuracy rate using the random forest is very high: Accuracy : 1 and therefore the out-of-sample-error is equal to 0***. But it might be due to overfitting.
+
+Prediction with Generalized Boosted Regression Models
+A gradient boosted model with multinomial loss function.
+150 iterations were performed.
+There were 52 predictors of which 42 had non-zero influence.
+Tuning parameter 'shrinkage' was held constant at a value of 0.1
+Tuning parameter 'n.minobsinnode' was held constant at a value of 10
+Accuracy was used to select the optimal model using the largest value.
+the final values used for the model were n.trees = 150,
+interaction.depth = 3, shrinkage = 0.1 and n.minobsinnode = 10.
+
+The accuracy rate using the random forest is very high: Accuracy : 0.9736 and therefore the *out-of-sample-error is equal to 0.0264**.
+
+Applying the best model to the validation data
+
+By comparing the accuracy rate values of the three models, it is clear that the *‘Random Forest’ model is the winner.* 
